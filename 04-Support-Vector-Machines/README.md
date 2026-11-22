@@ -42,7 +42,7 @@ The colored regions show the model's **predicted class** at each location. The d
 For a linear classifier, the raw decision score is
 
 $$
-f(x)=w^T x+b
+f(x)=w^{\mathsf{T}} x+b
 $$
 
 where:
@@ -54,22 +54,22 @@ where:
 The model predicts a class according to the **sign** of $f(x)$. The boundary itself is where
 
 $$
-w^Tx+b=0.
+w^{\mathsf{T}}x+b=0.
 $$
 
 For the standard hard-margin formulation, the two supporting boundaries are
 
 $$
-w^Tx+b=+1 \quad\text{and}\quad w^Tx+b=-1.
+w^{\mathsf{T}}x+b=+1 \quad\text{and}\quad w^{\mathsf{T}}x+b=-1.
 $$
 
 The distance between them is
 
 $$
-\text{Margin width}=\frac{2}{\|w\|}.
+\text{Margin width}=\frac{2}{\lVert w\rVert}.
 $$
 
-Therefore, **a smaller weight-vector norm produces a wider geometric margin**, under this normalization. This motivates minimizing $\frac12\|w\|^2$ while ensuring that training observations are correctly separated.
+Therefore, **a smaller weight-vector norm produces a wider geometric margin**, under this normalization. This motivates minimizing $\frac{1}{2}\lVert w\rVert^2$ while ensuring that training observations are correctly separated.
 
 ### Why support vectors matter
 
@@ -101,12 +101,12 @@ The key insight is that **a prediction can be correct but still incur loss** whe
 A common linear soft-margin objective is
 
 $$
-\min_{w,b}\;\frac{1}{2}\|w\|^2+C\sum_{i=1}^{n}\max\bigl(0,1-y_i(w^Tx_i+b)\bigr).
+\min_{w,b}\;\frac{1}{2}\lVert w\rVert^2+C\sum_{i=1}^{n}\max\bigl(0,1-y_i(w^{\mathsf{T}}x_i+b)\bigr).
 $$
 
 This balances two goals:
 
-- **$\frac12\|w\|^2$:** Prefer a wider margin and a simpler classifier.
+- **$\frac{1}{2}\lVert w\rVert^2$:** Prefer a wider margin and a simpler classifier.
 - **Hinge-loss term:** Penalize margin violations and incorrect classifications.
 
 ### What does C control?
@@ -128,7 +128,7 @@ A **kernel** computes similarities between observations in a way that correspond
 |---|---|---|
 | **Linear** | $K(x,z)=x^Tz$ | Straight hyperplane in the original feature space |
 | **Polynomial** | $K(x,z)=(\gamma x^Tz+r)^d$ | Can represent polynomial-shaped boundaries |
-| **RBF (Gaussian)** | $K(x,z)=\exp(-\gamma\|x-z\|^2)$ | Flexible, localized nonlinear boundaries |
+| **RBF (Gaussian)** | $K(x,z)=\exp(-\gamma\lVert x-z\rVert^2)$ | Flexible, localized nonlinear boundaries |
 
 The notebook trains all three kernel types on the same noisy **`make_moons` dataset** (`n_samples=300`, `noise=0.25`) after an 80/20 train/test split and feature scaling.
 
@@ -165,7 +165,7 @@ In this *particular* synthetic experiment, RBF performs best. This is not a univ
 For the RBF kernel,
 
 $$
-K(x,z)=\exp\left(-\gamma\|x-z\|^2\right).
+K(x,z)=\exp\left(-\gamma\lVert x-z\rVert^2\right).
 $$
 
 Consider two points that are separated by the same distance:
@@ -315,21 +315,21 @@ Suppose $\hat y=60$ and $\varepsilon=5$:
 
 - **Points strictly inside the epsilon tube** have zero epsilon-insensitive loss and ordinarily are not support vectors.
 - **Points on or outside the tube** can become support vectors and influence the learned regression function.
-- **Slack variables** $\xi_i$ and $\xi_i^*$ describe how far observations violate the upper or lower tube constraints.
+- **Slack variables** $\xi_i$ and $\xi_i^{\ast}$ describe how far observations violate the upper or lower tube constraints.
 
 For a linear SVR, the standard optimization problem is
 
 $$
-\min_{w,b,\xi,\xi^*}\;\frac12\|w\|^2+C\sum_{i=1}^{n}(\xi_i+\xi_i^*)
+\min_{w,b,\xi,\xi^{\ast}}\;\frac{1}{2}\lVert w\rVert^2+C\sum_{i=1}^{n}(\xi_i+\xi_i^{\ast})
 $$
 
 subject to
 
 $$
 \begin{aligned}
-y_i-(w^Tx_i+b) &\le \varepsilon+\xi_i,\\
-(w^Tx_i+b)-y_i &\le \varepsilon+\xi_i^*,\\
-\xi_i,\xi_i^* &\ge 0.
+y_i-(w^{\mathsf{T}}x_i+b) &\le \varepsilon+\xi_i,\\
+(w^{\mathsf{T}}x_i+b)-y_i &\le \varepsilon+\xi_i^{\ast},\\
+\xi_i,\xi_i^{\ast} &\ge 0.
 \end{aligned}
 $$
 
